@@ -42,19 +42,42 @@
 
 
 <script>
+
+	var map;
+	var Gmarker;
+
 	function initMap() {
  		// The location of Uluru
 		var uluru = {lat: <%= data["coord"]["lat"] %>, lng: <%= data["coord"]["lon"] %>};
+
 		// The map, centered at Uluru
-		var map = new google.maps.Map(
+		map = new google.maps.Map(
 			document.getElementById('map'), {zoom: 10, center: uluru});
+
 		// The marker, positioned at Uluru
 		var marker = new google.maps.Marker({position: uluru, map: map});
-}
-</script>
+		Gmarker = marker;
+		map.addListener('click',function(event){
+			deleteMarker();
+			addMarker(event.latLng);
+			console.log(event);
+		})
+	}
 
- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnlnh5BWmj38f34VBpg_0P6lZl2telloc&callback=initMap"
-    async defer></script>
+	function addMarker(location){
+		var marker = new google.maps.Marker({
+			position: location,
+			map: map
+		});
+		Gmarker = marker;
+	}
+
+	function deleteMarker(){
+		Gmarker.setMap(null);
+	}
+	
+
+</script>
 
 <!-- Add basic footer -->
 <% include partials/footer.ejs %>

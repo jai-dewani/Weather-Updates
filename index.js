@@ -37,6 +37,8 @@ app.get("/result",function(req,res){
 	});
 });
 
-app.listen(5000);
+app.listen(5000,function(){
+	console.log("App running on localhost:5000");
+});
 
 

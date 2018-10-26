@@ -1,0 +1,60 @@
+<!-- Add basic Header -->
+<% include partials/header.ejs %>
+	<style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 60%;
+        width: 80%;
+        margin: 10px auto;
+      }
+      /*Align the font with map*/
+      #info{
+      	margin-left: 10%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+	
+	<h1 style="text-align: center; margin-top: 20px;">Weather check for <%= data["name"] %></h1>
+	<div style="margin-left: 10%">
+		<a href="/">Check for another city?</a>
+	</div>
+	<div id="map"></div>
+
+	<div id="info">
+		<h3 style="display: table-cell; vertical-align: middle;">
+			<img src="http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png">
+			<span>
+				<%= data["weather"][0]["description"] %>
+			</span>
+				
+		</h3>
+		<h4>Temprature: <%= Math.floor(data["main"]["temp"]-273) %><sup>o</sup>C | Humidity: <%= data["main"]["humidity"] %>%</h4>
+
+		<h4>Wind(m/s): <%= data["wind"]["speed"] %> at <%= data["wind"]["deg"] %><sup>o</sup></h4>
+		<h5>Location: <%= data["name"] %>,<%= data["sys"]["country"] %></h5>
+	</div>
+
+
+<script>
+	function initMap() {
+ 		// The location of Uluru
+		var uluru = {lat: <%= data["coord"]["lat"] %>, lng: <%= data["coord"]["lon"] %>};
+		// The map, centered at Uluru
+		var map = new google.maps.Map(
+			document.getElementById('map'), {zoom: 10, center: uluru});
+		// The marker, positioned at Uluru
+		var marker = new google.maps.Marker({position: uluru, map: map});
+}
+</script>
+
+ <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAnlnh5BWmj38f34VBpg_0P6lZl2telloc&callback=initMap"
+    async defer></script>
+
+<!-- Add basic footer -->
+<% include partials/footer.ejs %>

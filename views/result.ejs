@@ -37,7 +37,7 @@
 		</h3>
 		<h4>
 			Temprature: 
-			<span id="temprature"><%= Math.floor(data["main"]["temp"]-273) %></span>
+			<span id="temprature"><%= Math.floor((data["main"]["temp"]-273)*100)/100 %></span>
 			<sup>o</sup>C | Humidity: 
 			<span id="humidity"><%= data["main"]["humidity"] %></span>%
 		</h4>
@@ -102,9 +102,11 @@
 		imageURL = "http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png";
 		description = data['weather'][0]['description']
 		temp = data['main']['temp']-273;
+		temp = Math.floor(temp*100)/100;
 		humidity = data['main']['humidity']
 		wind = data['wind']['speed']
 		direction = data['wind']['deg']
+		direction = Math.floor(direction);
 
 		$('#locName').html(name);
 		$('#image').attr('src',imageURL);

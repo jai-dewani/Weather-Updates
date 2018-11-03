@@ -20,7 +20,9 @@
       }
     </style>
 	
-	<h1 style="text-align: center; margin-top: 20px;">Weather check for <%= data["name"] %></h1>
+	<h1 style="text-align: center; margin-top: 20px;">Weather check for 
+		<span id="locName"><%= data["name"] %></span>
+	</h1>
 	<div style="margin-left: 10%">
 		<a href="/">Check for another city?</a>
 	</div>
@@ -28,21 +30,35 @@
 
 	<div id="info">
 		<h3 style="display: table-cell; vertical-align: middle;">
-			<img src="http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png">
-			<span>
+			<img id="image" src="http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png">
+			<span id="description">
 				<%= data["weather"][0]["description"] %>
 			</span>
-				
 		</h3>
-		<h4>Temprature: <%= Math.floor(data["main"]["temp"]-273) %><sup>o</sup>C | Humidity: <%= data["main"]["humidity"] %>%</h4>
+		<h4>
+			Temprature: 
+			<span id="temprature"><%= Math.floor(data["main"]["temp"]-273) %></span>
+			<sup>o</sup>C | Humidity: 
+			<span id="humidity"><%= data["main"]["humidity"] %></span>%
+		</h4>
 
-		<h4>Wind(m/s): <%= data["wind"]["speed"] %> at <%= data["wind"]["deg"] %><sup>o</sup></h4>
+		<h4>
+			Wind(m/s): 
+			<span id="windSpeed"><%= data["wind"]["speed"] %></span>
+			at 
+			<span id="windDir"><%= data["wind"]["deg"] %></span>
+			<sup>o</sup>
+		</h4>
 		<h5>Location: <%= data["name"] %>,<%= data["sys"]["country"] %></h5>
 	</div>
 
 
+<script src="/socket.io/socket.io.js">
+</script>
+
 <script>
 
+	var socket = io();
 	var map;
 	var Gmarker;
 
@@ -57,12 +73,15 @@
 		// The marker, positioned at Uluru
 		var marker = new google.maps.Marker({position: uluru, map: map});
 		Gmarker = marker;
+
+		// Click event Listner
 		map.addListener('click',function(event){
+			socket.emit('locChange',event.latLng);
 			deleteMarker();
 			addMarker(event.latLng);
 			console.log(event);
-		})
-	}
+		});
+	};
 
 	function addMarker(location){
 		var marker = new google.maps.Marker({
@@ -70,13 +89,32 @@
 			map: map
 		});
 		Gmarker = marker;
-	}
+	};
 
 	function deleteMarker(){
 		Gmarker.setMap(null);
-	}
-	
+	};
 
+	socket.on('newLoc',function(data){
+		console.log(data);
+		name = data['name'];
+		country = data['sys']['country'];
+		imageURL = "http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png";
+		description = data['weather'][0]['description']
+		temp = data['main']['temp']-273;
+		humidity = data['main']['humidity']
+		wind = data['wind']['speed']
+		direction = data['wind']['deg']
+
+		$('#locName').html(name);
+		$('#image').attr('src',imageURL);
+		$('#description').html(description);
+		$('#temprature').html(temp);
+		$('#humidity').html(humidity);
+		$('#windSpeed').html(wind);
+		$('#windDir').html(direction);
+		// $('#image').attr("src",1"http://openweathermap.org/img/w/<%= data['weather'][0]['icon'] %>.png");
+	});
 </script>
 
 <!-- Add basic footer -->

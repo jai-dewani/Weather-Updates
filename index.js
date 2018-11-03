@@ -10,7 +10,7 @@ app.get("/",function(req,res){
 	res.render("Home");
 });
 
-app.post("/",function(req,res){
+app.get("/result",function(req,res){
 	var query = req.query.search;
 	var url = "http://api.openweathermap.org/data/2.5/weather?q="+query+"&APPID=49332846259075865691dcc5d79a4b3c";
 	request(url,function(error,response,body){

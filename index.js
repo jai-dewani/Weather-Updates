@@ -3,16 +3,15 @@ var app = express();
 var http = require('http').Server(app);
 var request = require("request");
 var io = require('socket.io')(http);
-
 app.set("view engine","ejs");
 
 app.get("/",function(req,res){
-	res.render("Home");
+	res.render("home");
 });
 
 app.get("/result",function(req,res){
 	var query = req.query.search;
-	var url = "http://api.openweathermap.org/data/2.5/weather?q="+query+"&APPID=49332846259075865691dcc5d79a4b3c";
+	var url = "http://api.openweathermap.org/data/2.5/weather?q="+query+"&APPID="+apiKey;
 	request(url,function(error,response,body){
 		if(!error && response.statusCode == 200){
 			var results = JSON.parse(body);
@@ -34,7 +33,7 @@ io.on('connection',function(socket){
 	socket.on('locChange',function(latLng){
 		var lat = latLng.lat;
 		var lon = latLng.lng;
-		var url = "https://api.openweathermap.org/data/2.5/weather?lat="+ lat +"&lon="+ lon +"&APPID=49332846259075865691dcc5d79a4b3c";
+		var url = "https://api.openweathermap.org/data/2.5/weather?lat="+ lat +"&lon="+ lon +"&APPID="+apiKey;
 
 		request(url,function(error,response,body){
 			if(!error && response.statusCode == 200){
